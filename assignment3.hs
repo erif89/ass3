@@ -13,15 +13,16 @@ genwords
 -- An abstract data type for dictionaries, i.e., key-value stores,
 -- represented as an ordered tree.
 data Node k v = Node k v (Node k v) (Node k v) | Nil
-data Dict k v cmp = Root (Node k v) cmp
+data Dict k v cmp = Root v (Node k v) cmp
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. default is the value that should be returned if a key is not found.
 create-dictionary :: cmp v -> Dict k v cmp -- TODO change cmp to function type
-create-dictionary compare default
+create-dictionary compare default = Root default Nil compare
 
 -- find value for key.
 lookup :: k (Dict k v cmp) -> v
-lookup key dict
+lookup key (Root d Nil _) = d
+lookup key (Root d (Node k v left right) cmp) = v -- FIXME
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
 update :: k v (Dict k v cmp) -> (Dict k v cmp)

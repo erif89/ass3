@@ -1,3 +1,10 @@
+{--
+Advanced Functional Programming, Assignment 3 - Haskell
+Authors:
+- Carl Carenvall <caca7037@student.uu.se>
+- Emil Wall <emwa3503@student.uu.se>
+--}
+
 module assignment3
 (create-dictionary,
 lookup,

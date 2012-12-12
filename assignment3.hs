@@ -24,16 +24,15 @@ data Node k v = Node k v (Node k v) (Node k v) | Nil
 data Dict k v cmp = Root v (Node k v) cmp
 
 -- Standard compare function
--- should we really use strings? Is there and alternative?
-stdcmp :: Ordering -> Ordering -> String
+stdcmp :: Ordering -> Ordering -> Ordering
 stdcmp left right 
-        | left == right = "EQ"
-        | left < right = "LT"
-        | left > right = "GT"
+        | left == right = EQ
+        | left < right = LT
+        | left > right = GT
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
 -- createDictionary :: cmp v -> Dict k v cmp -- TODO change cmp to function type
-createDictionary :: a -> b -- FIXME
+createDictionary :: a -> b -> c -- FIXME
 createDictionary compare d = Root d Nil compare
 
 -- find value for key.

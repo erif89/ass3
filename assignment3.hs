@@ -7,7 +7,7 @@ Authors:
 
 module Assignment3
 (createDictionary,
-standardcmp,
+stdcmp,
 lookup,
 update,
 fold,
@@ -36,9 +36,9 @@ createDictionary :: c -> b -> Dict x b c -- FIXME
 createDictionary compare d = Root d Nil compare
 
 -- find value for key.
-lookup :: k -> Dict k v c -> v
-lookup key (Root d Nil _) = d
-lookup key (Root d (Node k v left right) cmp) = v -- FIXME
+find :: k -> Dict k v c -> v
+find key (Root d Nil _) = d
+find key (Root d (Node k v left right) cmp) = v -- FIXME
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
 update :: k -> v -> Dict k v c -> Dict k v c

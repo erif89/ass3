@@ -7,6 +7,7 @@ Authors:
 
 module Assignment3
 (createDictionary,
+standardcmp,
 lookup,
 update,
 fold,
@@ -21,6 +22,14 @@ genwords
 -- represented as an ordered tree.
 data Node k v = Node k v (Node k v) (Node k v) | Nil
 data Dict k v cmp = Root v (Node k v) cmp
+
+-- Standard compare function
+-- should we really use strings? Is there and alternative?
+stdcmp :: Ordering -> Ordering -> String
+stdcmp left right 
+        | left == right = "EQ"
+        | left < right = "LT"
+        | left > right = "GT"
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
 -- createDictionary :: cmp v -> Dict k v cmp -- TODO change cmp to function type
@@ -40,7 +49,7 @@ update key value dict = dict -- FIXME
 
 -- fold the key-value pairs of the dictionary using the function fun. fun should take three arguments: key, value and sofar (in this order) which is the accumulated value so far. initial is the initial value for sofar. Please note that order of application is (or at least should be) not relevant.
 -- fold :: (k v a -> a) (Dict k v cmp) a -> a -- FIXME
-fold :: a -> b -- FIXME
+fold :: a b c -> c -- FIXME
 fold fun dict initial = initial -- FIXME
 
 -- return a new dictionary that is more balanced (if needed). This could be run when needed as part of update as well.
@@ -54,7 +63,7 @@ keys dict = [] -- FIXME
 
 -- determines if dict1 and dict2 contain the same set of keys. Take care to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
 -- samekeys :: (Dict k v cmp) (Dict k v cmp) -> Bool -- FIXME
-samekeys :: a -> b -- FIXME
+samekeys :: a -> Bool -- FIXME
 samekeys dict1 dict2 = False -- FIXME
 
 
@@ -63,8 +72,8 @@ samekeys dict1 dict2 = False -- FIXME
 --   papercuts "hello" =
 --     [("","hello"),("h","ello"),("he","llo"),
 --      ("hel","lo"),("hell","o"),("hello","")]
-papercuts :: [a] -> [[a]] -- TODO clarify if a can be anything other than Char
-papercuts s = ["",s] -- FIXME
+papercuts :: String -> [(String, String)] -- TODO clarify if a can be anything other than Char
+papercuts s = [("",s)] -- FIXME
 
 
 -- Generates all permutations of a list. The list is generated lazily, i.e., all elements are not eagerly constructed.
@@ -84,7 +93,7 @@ permutations s = [s] -- FIXME
 --   take 20 (filter (\w -> (length w) == 4) (genwords "dea")) =
 --     ["dddd","eddd","addd","dedd","eedd","aedd","dadd","eadd","aadd","dded",
 --      "eded","aded","deed","eeed","aeed","daed","eaed","aaed","ddad","edad"]
-genwords :: [a] -> [[a]]
+genwords :: String -> [String]
 genwords s = [""] -- FIXME
 
 -- TODO add tests. See http://hunit.sourceforge.net/ and http://hackage.haskell.org/package/QuickCheck-2.1.1.1

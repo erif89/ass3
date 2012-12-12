@@ -32,28 +32,25 @@ stdcmp left right
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
 -- createDictionary :: cmp v -> Dict k v cmp -- TODO change cmp to function type
-createDictionary :: a -> b -> c -- FIXME
+createDictionary :: c -> b -> Dict x b c -- FIXME
 createDictionary compare d = Root d Nil compare
 
 -- find value for key.
--- lookup :: k (Dict k v cmp) -> v -- FIXME
-lookup :: a -> b -- FIXME
+lookup :: k -> Dict k v c -> v
 lookup key (Root d Nil _) = d
 lookup key (Root d (Node k v left right) cmp) = v -- FIXME
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
--- update :: k v (Dict k v cmp) -> (Dict k v cmp) -- FIXME
-update :: a -> b -- FIXME
+update :: k -> v -> Dict k v c -> Dict k v c
 update key value dict = dict -- FIXME
 
 -- fold the key-value pairs of the dictionary using the function fun. fun should take three arguments: key, value and sofar (in this order) which is the accumulated value so far. initial is the initial value for sofar. Please note that order of application is (or at least should be) not relevant.
--- fold :: (k v a -> a) (Dict k v cmp) a -> a -- FIXME
-fold :: a b c -> c -- FIXME
+fold :: (k -> v -> s) -> Dict k v c -> s -> s 
 fold fun dict initial = initial -- FIXME
 
 -- return a new dictionary that is more balanced (if needed). This could be run when needed as part of update as well.
 -- rebalace :: (Dict k v cmp) -> (Dict k v cmp) FIXME
-rebalance :: a -> a  -- FIXME
+rebalance :: Dict k v c -> Dict k v c  -- FIXME
 rebalance dict = dict -- FIXME
 
 -- return the keys of the dictionary in a list. The order of the keys is not relevant.
@@ -62,7 +59,7 @@ keys dict = [] -- FIXME
 
 -- determines if dict1 and dict2 contain the same set of keys. Take care to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
 -- samekeys :: (Dict k v cmp) (Dict k v cmp) -> Bool -- FIXME
-samekeys :: a -> Bool -- FIXME
+samekeys :: Dict k v c -> Dict k v c -> Bool -- FIXME
 samekeys dict1 dict2 = False -- FIXME
 
 

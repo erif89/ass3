@@ -21,7 +21,21 @@ genwords
 -- An abstract data type for dictionaries, i.e., key-value stores,
 -- represented as an ordered tree.
 data Node k v = Node k v (Node k v) (Node k v) | Nil
+
+showNode :: Node k v -> String
+showNode Nil = "Nil"
+showNode (Node k v l r) = "k " ++ (show k) ++ ", v " ++ (show v) ++
+                          ", l (" ++ showNode l ++
+                          "), r (" ++ showNode r ++ ")"
+
+instance Show (Node k v) where
+  show (Node k v l r) = showNode (Node k v l r)
+  show Nil = showNode Nil
+
 data Dict k v cmp = Root v (Node k v) cmp
+
+instance Show (Dict k v compare) where
+  show (Root d n compare) = "{Dict: " ++ showNode n ++ "}"
 
 -- Standard compare function
 stdcmp :: Ordering -> Ordering -> Ordering

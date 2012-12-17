@@ -7,7 +7,6 @@ Authors:
 
 module Assignment3
 (createDictionary,
-stdcmp,
 lookup,
 update,
 fold,
@@ -18,31 +17,33 @@ permutations,
 genwords
 ) where
 
+data Nil = Nothing
+
 -- An abstract data type for dictionaries, i.e., key-value stores,
 -- represented as an ordered tree.
 data Node k v = Node k v (Node k v) (Node k v) | Nil
 
-showNode :: Node k v -> String
-showNode Nil = "Nil"
-showNode (Node k v l r) = "k " ++ (show k) ++ ", v " ++ (show v) ++
-                          ", l (" ++ showNode l ++
-                          "), r (" ++ showNode r ++ ")"
+--instance Show Color where
+--    show Red   = "Red"
+--    show Green = "Green"
+--    show Blue  = "Blue"
+    
+--instance Show (Node k v) where
+--    show Nil = "Nil"
+--    show (Node k v l r) = "k " ++ show k ++ ", v " ++ show v ++
+--                          ", l (" ++ show l ++
+--                          "), r (" ++ show r ++ ")"
 
-instance Show (Node k v) where
-  show (Node k v l r) = showNode (Node k v l r)
-  show Nil = showNode Nil
+--instance Show (Node k v) where
+--  show (Node k v l r) = showNode (Node k v l r)
+--  show Nil = showNode Nil
 
 data Dict k v cmp = Root v (Node k v) cmp
 
-instance Show (Dict k v compare) where
-  show (Root d n compare) = "{Dict: " ++ showNode n ++ "}"
+--instance Show (Dict k v cmp) where
+--  show (Root d n cmp) = "{Dict: " ++ show n ++ "}"
 
--- Standard compare function
-stdcmp :: Ordering -> Ordering -> Ordering
-stdcmp left right 
-        | left == right = EQ
-        | left < right = LT
-        | left > right = GT
+    
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
 -- createDictionary :: cmp v -> Dict k v cmp -- TODO change cmp to function type
@@ -55,8 +56,27 @@ find key (Root d Nil _) = d
 find key (Root d (Node k v left right) cmp) = v -- FIXME
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
-update :: k -> v -> Dict k v c -> Dict k v c
-update key value dict = dict -- FIXME
+update :: k -> v -> Dict k v (k -> k -> Ordering) -> Dict k v (k -> k -> Ordering)
+update key value (Root d Nil cmp) = (Root d (Node key value Nil Nil) cmp)
+update key value (Root d node cmp) = (Root d (update_node key value node cmp) cmp)
+    
+--update_node :: k -> v -> Node k v -> c -> Node k v
+update_node :: k -> v -> Node k v -> (k -> k -> Ordering) -> Node k v
+update_node key value (Node k v Nil Nil) cmp = (Node k v Nil Nil)
+update_node key value (Node k v Nil right) cmp
+    | cmp key k == EQ = (Node k value Nil right)
+    | cmp key k == LT = (Node k v (Node key value Nil Nil) right)
+    | cmp key k == GT = (Node k v Nil (update_node key value right cmp))
+    
+update_node key value (Node k v left Nil) cmp
+    | cmp key k == EQ = (Node k value left Nil)
+    | cmp key k == LT = (Node k v (update_node key value left cmp) Nil)
+    | cmp key k == GT = (Node k v left (Node key value Nil Nil))
+    
+update_node key value (Node k v left right) cmp
+    | cmp key k == EQ = (Node k value left right)
+    | cmp key k == LT = (Node k v (update_node key value left cmp) right)
+    | cmp key k == GT = (Node k v left (update_node key value right cmp))
 
 -- fold the key-value pairs of the dictionary using the function fun. fun should take three arguments: key, value and sofar (in this order) which is the accumulated value so far. initial is the initial value for sofar. Please note that order of application is (or at least should be) not relevant.
 fold :: (k -> v -> s) -> Dict k v c -> s -> s 
@@ -83,7 +103,14 @@ samekeys dict1 dict2 = False -- FIXME
 --     [("","hello"),("h","ello"),("he","llo"),
 --      ("hel","lo"),("hell","o"),("hello","")]
 papercuts :: String -> [(String, String)] -- TODO clarify if a can be anything other than Char
-papercuts s = [("",s)] -- FIXME
+papercuts s = papercutshelper s (length s) (length s) [] -- FIXME
+
+-- trivial solution
+papercutshelper :: String -> Int -> Int -> [(String, String)] -> [(String, String)] 
+papercutshelper s count length acc
+    | count < 0 = acc
+    | count >= 0 = (papercutshelper s (count-1) length ((take count s, drop count s):acc))
+
 
 
 -- Generates all permutations of a list. The list is generated lazily, i.e., all elements are not eagerly constructed.

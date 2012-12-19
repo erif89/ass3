@@ -17,28 +17,30 @@ permutations,
 genwords
 ) where
 
+import HUnit
+
 data Nil = Nothing
 
 -- An abstract data type for dictionaries, i.e., key-value stores,
 -- represented as an ordered tree.
-data Node k v = Node k v (Node k v) (Node k v) | Nil
+data Nod k v = Nod k v (Nod k v) (Nod k v) | Nil
 
 --instance Show Color where
 --    show Red   = "Red"
 --    show Green = "Green"
 --    show Blue  = "Blue"
     
---instance Show (Node k v) where
+--instance Show (Nod k v) where
 --    show Nil = "Nil"
---    show (Node k v l r) = "k " ++ show k ++ ", v " ++ show v ++
+--    show (Nod k v l r) = "k " ++ show k ++ ", v " ++ show v ++
 --                          ", l (" ++ show l ++
 --                          "), r (" ++ show r ++ ")"
 
---instance Show (Node k v) where
---  show (Node k v l r) = showNode (Node k v l r)
---  show Nil = showNode Nil
+--instance Show (Nod k v) where
+--  show (Nod k v l r) = showNod (Nod k v l r)
+--  show Nil = showNod Nil
 
-data Dict k v cmp = Root v (Node k v) cmp
+data Dict k v cmp = Root v (Nod k v) cmp
 
 --instance Show (Dict k v cmp) where
 --  show (Root d n cmp) = "{Dict: " ++ show n ++ "}"
@@ -53,30 +55,30 @@ createDictionary compare d = Root d Nil compare
 -- find value for key.
 find :: k -> Dict k v c -> v
 find key (Root d Nil _) = d
-find key (Root d (Node k v left right) cmp) = v -- FIXME
+find key (Root d (Nod k v left right) cmp) = v -- FIXME
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
 update :: k -> v -> Dict k v (k -> k -> Ordering) -> Dict k v (k -> k -> Ordering)
-update key value (Root d Nil cmp) = (Root d (Node key value Nil Nil) cmp)
+update key value (Root d Nil cmp) = (Root d (Nod key value Nil Nil) cmp)
 update key value (Root d node cmp) = (Root d (update_node key value node cmp) cmp)
     
---update_node :: k -> v -> Node k v -> c -> Node k v
-update_node :: k -> v -> Node k v -> (k -> k -> Ordering) -> Node k v
-update_node key value (Node k v Nil Nil) cmp = (Node k v Nil Nil)
-update_node key value (Node k v Nil right) cmp
-    | cmp key k == EQ = (Node k value Nil right)
-    | cmp key k == LT = (Node k v (Node key value Nil Nil) right)
-    | cmp key k == GT = (Node k v Nil (update_node key value right cmp))
+--update_node :: k -> v -> Nod k v -> c -> Nod k v
+update_node :: k -> v -> Nod k v -> (k -> k -> Ordering) -> Nod k v
+update_node key value (Nod k v Nil Nil) cmp = (Nod k v Nil Nil)
+update_node key value (Nod k v Nil right) cmp
+    | cmp key k == EQ = (Nod k value Nil right)
+    | cmp key k == LT = (Nod k v (Nod key value Nil Nil) right)
+    | cmp key k == GT = (Nod k v Nil (update_node key value right cmp))
     
-update_node key value (Node k v left Nil) cmp
-    | cmp key k == EQ = (Node k value left Nil)
-    | cmp key k == LT = (Node k v (update_node key value left cmp) Nil)
-    | cmp key k == GT = (Node k v left (Node key value Nil Nil))
+update_node key value (Nod k v left Nil) cmp
+    | cmp key k == EQ = (Nod k value left Nil)
+    | cmp key k == LT = (Nod k v (update_node key value left cmp) Nil)
+    | cmp key k == GT = (Nod k v left (Nod key value Nil Nil))
     
-update_node key value (Node k v left right) cmp
-    | cmp key k == EQ = (Node k value left right)
-    | cmp key k == LT = (Node k v (update_node key value left cmp) right)
-    | cmp key k == GT = (Node k v left (update_node key value right cmp))
+update_node key value (Nod k v left right) cmp
+    | cmp key k == EQ = (Nod k value left right)
+    | cmp key k == LT = (Nod k v (update_node key value left cmp) right)
+    | cmp key k == GT = (Nod k v left (update_node key value right cmp))
 
 -- fold the key-value pairs of the dictionary using the function fun. fun should take three arguments: key, value and sofar (in this order) which is the accumulated value so far. initial is the initial value for sofar. Please note that order of application is (or at least should be) not relevant.
 fold :: (k -> v -> s) -> Dict k v c -> s -> s 
@@ -134,3 +136,5 @@ genwords :: String -> [String]
 genwords s = [""] -- FIXME
 
 -- TODO add tests. See http://hunit.sourceforge.net/ and http://hackage.haskell.org/package/QuickCheck-2.1.1.1
+
+test1 = TestCase (assertEqual "1" 1 1)

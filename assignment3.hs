@@ -43,26 +43,23 @@ createDictionary cmp d = Root d Nil cmp
 
 -- find value for key.
 find :: k -> Dict k v -> v
-find key (Root d t cmp) = find_node key d t cmp
-
-find_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> v
-find_node _ d Nil _ = d
-find_node key d (Nod k v left right) cmp
-    | cmp key k == EQ = v
-    | cmp key k == LT = find_node key d left cmp
-    | cmp key k == GT = find_node key d right cmp
+find key (Root d t cmp) = find_node key d t cmp where
+    find_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> v
+    find_node _ d Nil _ = d
+    find_node key d (Nod k v left right) cmp
+        | cmp key k == EQ = v
+        | cmp key k == LT = find_node key d left cmp
+        | cmp key k == GT = find_node key d right cmp
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
 update :: k -> v -> Dict k v -> Dict k v
-update key value (Root d t cmp) = Root d (update_node key value t cmp) cmp
-
---update_node :: k -> v -> Nod k v -> c -> Nod k v
-update_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> Tree k v
-update_node key value Nil _ = Nod key value Nil Nil
-update_node key value (Nod k v left right) cmp
-    | cmp key k == EQ = Nod k value left right
-    | cmp key k == LT = Nod k v (update_node key value left cmp) right
-    | cmp key k == GT = Nod k v left (update_node key value right cmp)
+update key value (Root d t cmp) = Root d (update_node key value t cmp) cmp where
+    update_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> Tree k v
+    update_node key value Nil _ = Nod key value Nil Nil
+    update_node key value (Nod k v left right) cmp
+        | cmp key k == EQ = Nod k value left right
+        | cmp key k == LT = Nod k v (update_node key value left cmp) right
+        | cmp key k == GT = Nod k v left (update_node key value right cmp)
 
 -- fold the key-value pairs of the dictionary using the function fun. fun should take three arguments: key, value and sofar (in this order) which is the accumulated value so far. initial is the initial value for sofar. Please note that order of application is (or at least should be) not relevant.
 fold :: (k -> v -> s) -> Dict k v -> s -> s 
@@ -75,9 +72,9 @@ rebalance dict = dict -- FIXME
 
 -- return the keys of the dictionary in a list. The order of the keys is not relevant.
 keys :: (Dict k v) -> [k]
-keys (Root d t cmp) = allKeys t []
-    where allKeys Nil acc                   = acc
-          allKeys (Nod k v left right) acc  = allKeys left (allKeys right (k:acc))
+keys (Root d t cmp) = allKeys t [] where
+    allKeys Nil acc = acc
+    allKeys (Nod k v left right) acc = allKeys left (allKeys right (k:acc))
           
         
 
@@ -93,10 +90,10 @@ samekeys dict1 dict2 = False -- FIXME
 --     [("","hello"),("h","ello"),("he","llo"),
 --      ("hel","lo"),("hell","o"),("hello","")]
 papercuts :: [a] -> [([a], [a])] -- TODO clarify if a can be anything other than Char
-papercuts s = cuts s (length s) [] 
-    where cuts s count acc 
-            | count < 0 = acc 
-            | count >= 0 = (cuts s (count-1) ((take count s, drop count s):acc))
+papercuts s = cuts s (length s) [] where
+    cuts s count acc 
+        | count < 0 = acc 
+        | count >= 0 = (cuts s (count-1) ((take count s, drop count s):acc))
 
 
 -- Generates all permutations of a list. The list is generated lazily, i.e.,
@@ -115,9 +112,9 @@ papercuts s = cuts s (length s) []
 -- TODO don't use version from http://rosettacode.org/wiki/Permutations#Haskell
 permutations :: [a] -> [[a]]
 permutations [] = [[]]
-permutations xs = [ y:zs | (y,ys) <- select xs, zs <- permutations ys]
-  where select []     = []
-        select (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- select xs ]
+permutations xs = [ y:zs | (y,ys) <- select xs, zs <- permutations ys] where
+    select [] = []
+    select (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- select xs ]
 
 
 -- Generates a list of all strings that can be constructed using the elements of an alphabet.
@@ -131,10 +128,9 @@ permutations xs = [ y:zs | (y,ys) <- select xs, zs <- permutations ys]
 --     ["dddd","eddd","addd","dedd","eedd","aedd","dadd","eadd","aadd","dded",
 --      "eded","aded","deed","eeed","aeed","daed","eaed","aaed","ddad","edad"]
 genwords :: [a] -> [[a]]
-genwords s = genwordsHelper s 0 []
-
-genwordsHelper :: [a] -> Int -> [[a]] -> [[a]]
-genwordsHelper s n acc = acc
+genwords s = genwordsHelper s 0 [] where
+    genwordsHelper :: [a] -> Int -> [[a]] -> [[a]]
+    genwordsHelper s n acc = acc
 
 -- Tests. See http://hunit.sourceforge.net/ and possibly
 -- http://hackage.haskell.org/package/QuickCheck-2.1.1.1

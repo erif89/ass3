@@ -105,13 +105,13 @@ samekeys dict1 dict2 = False -- FIXME
 --     [("","hello"),("h","ello"),("he","llo"),
 --      ("hel","lo"),("hell","o"),("hello","")]
 papercuts :: [a] -> [([a], [a])] -- TODO clarify if a can be anything other than Char
-papercuts s = papercutshelper s (length s) (length s) [] -- FIXME
+papercuts s = papercutshelper s (length s) [] -- FIXME
 
 -- trivial solution
-papercutshelper :: [a] -> Int -> Int -> [([a], [a])] -> [([a], [a])] 
-papercutshelper s count length acc
+papercutshelper :: [a] -> Int -> [([a], [a])] -> [([a], [a])] 
+papercutshelper s count acc
     | count < 0 = acc
-    | count >= 0 = (papercutshelper s (count-1) length ((take count s, drop count s):acc))
+    | count >= 0 = (papercutshelper s (count-1) ((take count s, drop count s):acc))
 
 
 

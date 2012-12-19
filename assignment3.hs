@@ -104,11 +104,11 @@ samekeys dict1 dict2 = False -- FIXME
 --   papercuts "hello" =
 --     [("","hello"),("h","ello"),("he","llo"),
 --      ("hel","lo"),("hell","o"),("hello","")]
-papercuts :: String -> [(String, String)] -- TODO clarify if a can be anything other than Char
+papercuts :: [a] -> [([a], [a])] -- TODO clarify if a can be anything other than Char
 papercuts s = papercutshelper s (length s) (length s) [] -- FIXME
 
 -- trivial solution
-papercutshelper :: String -> Int -> Int -> [(String, String)] -> [(String, String)] 
+papercutshelper :: [a] -> Int -> Int -> [([a], [a])] -> [([a], [a])] 
 papercutshelper s count length acc
     | count < 0 = acc
     | count >= 0 = (papercutshelper s (count-1) length ((take count s, drop count s):acc))
@@ -137,6 +137,13 @@ genwords s = [""] -- FIXME
 
 -- TODO add tests. See http://hunit.sourceforge.net/ and http://hackage.haskell.org/package/QuickCheck-2.1.1.1
 
-test1 = TestCase (assertEqual "1" [("","hello"),("h","ello"),("he","llo"),("hel","lo"),("hell","o"),("hello","")] (papercuts "hello"))
-test2 = TestCase (assertEqual "2" [("","")] (papercuts ""))
-tests = TestList [TestLabel "test1" test1, TestLabel "test2" test2]
+papercutsTests = TestList [TestLabel "test1" (TestCase (assertEqual "1"
+    [("","hello"), ("h","ello"), ("he","llo"), ("hel","lo"),
+        ("hell","o"), ("hello","")]
+    (papercuts "hello"))),
+                           TestLabel "test2" (TestCase (assertEqual "2"
+    [("","")]
+    (papercuts ""))),
+                           TestLabel "test3" (TestCase (assertEqual "2"
+    [([],[0,1]), ([0],[1]), ([0,1],[])]
+    (papercuts [0, 1])))]

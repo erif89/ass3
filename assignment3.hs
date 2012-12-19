@@ -229,5 +229,10 @@ permutationsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
      ["High", "Yoda", "Jumps"], ["High", "Jumps", "Yoda"]]
     (permutations ["Yoda", "Jumps", "High"]))),
                               TestLabel "test2" (TestCase (assertEqual ""
-    ["abcdefghijklmnopqrstuvwxyz"]
-    (take 1 (permutations "abcdefghijklmnopqrstuvwxyz"))))]
+    ["abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxzy"]
+    (take 2 (permutations "abcdefghijklmnopqrstuvwxyz")))),
+                              TestLabel "test2" (TestCase (assertEqual ""
+    [[0,2,4,6,8,1,3,5,7,9], [0,2,4,6,8,1,3,5,9,7],
+     [0,2,4,6,8,1,3,7,5,9], [0,2,4,6,8,1,3,7,9,5],
+     [0,2,4,6,8,1,3,9,5,7], [0,2,4,6,8,1,3,9,7,5]]
+    (take 6 (permutations [0,2,4,6,8,1,3,5,7,9]))))]

@@ -19,7 +19,7 @@ genwords
 
 import HUnit
 
-data Nil = Nothing
+
 
 -- An abstract data type for dictionaries, i.e., key-value stores,
 -- represented as an ordered tree.
@@ -90,39 +90,19 @@ keys (Root d t cmp) = allKeys t [] where
 
 -- Determines if dict1 and dict2 contain the same set of keys. Care has been taken to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
 samekeys :: Dict k v -> Dict k v -> Bool
-samekeys (Root d1 t1 cmp1) (Root d2 t2 cmp2) = samekeysHelp (buildstack t1) (buildstack t2) cmp1 where
+samekeys (Root d1 t1 cmp1) (Root d2 t2 cmp2) = samekeysHelp (buildstack t1 []) (buildstack t2 []) cmp1 where
     samekeysHelp stack1 stack2 cmp
         | (null stack1) || (null stack2) = (null stack1) && (null stack2)
-        | 
+        | otherwise = progress stack1 stack2 cmp
+    progress stack1@((Nod k1 _ _ _):rest1) stack2@((Nod k2 _ _ _):rest2) cmp =
+        (cmp k1 k2) == EQ && samekeysHelp (popnode stack1) (popnode stack2) cmp
+    buildstack Nil acc = acc
+    buildstack node@(Nod k v left _) acc = (buildstack left (node:acc))
+    popnode [] = []
+    popnode ((Nod _ _ _ right):stack) = buildstack right stack
     
     
-    (defun samekeyshelper (cmp stack1 stack2)
-  (let ((empty1 (null (car stack1)))
-        (empty2 (null (car stack2))))
-  (unless (or (and empty1 (car stack2)) (and (car stack1) empty2))
-    (or (and empty1 empty2)
-        (and (eq (funcall cmp (treenode-key(car stack1))
-                              (treenode-key(car stack2))) 'T)
-             (samekeyshelper cmp (popnode stack1) (popnode stack2)))))))
 
-  (let ((root1 (treedict-tree dict1))
-        (root2 (treedict-tree dict2)))
-    (if (or (null root1) (null root2))
-        (and (null root1) (null root2))
-        (and (= (treenode-size root1) (treenode-size root2))
-             (samekeyshelper (treedict-cmp dict1)
-               (buildstack root1 nil)
-               (buildstack root2 nil))))))
-               
-               
-               (defun buildstack (node stack)
-  (if node (buildstack (treenode-left node) (cons node stack)) stack))
-  
-  (defun popnode (stack)
-  (when stack
-    (if (treenode-right (car stack))
-        (buildstack (treenode-right (car stack)) (cdr stack))
-        (cdr stack))))
 
 
 -- Takes a list and returns a list of all ways to split the list into two

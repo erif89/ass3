@@ -118,8 +118,12 @@ papercutshelper s count acc
 -- Generates all permutations of a list. The list is generated lazily, i.e., all elements are not eagerly constructed.
 -- Question: How can you, at least informally, verify that you are indeed generating the list of permutations lazily?
 -- Answer: TODO
+-- TODO don't use version from http://rosettacode.org/wiki/Permutations#Haskell
 permutations :: [a] -> [[a]]
-permutations s = [s] -- FIXME
+permutations [] = [[]]
+permutations xs = [ y:zs | (y,ys) <- select xs, zs <- permutations ys]
+  where select []     = []
+        select (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- select xs ]
 
 
 -- Generates a list of all strings that can be constructed using the elements of an alphabet.
@@ -133,7 +137,7 @@ permutations s = [s] -- FIXME
 --     ["dddd","eddd","addd","dedd","eedd","aedd","dadd","eadd","aadd","dded",
 --      "eded","aded","deed","eeed","aeed","daed","eaed","aaed","ddad","edad"]
 genwords :: String -> [String]
-genwords s = [""] -- FIXME
+genwords s = [] -- FIXME
 
 -- Tests. See http://hunit.sourceforge.net/ and possibly
 -- http://hackage.haskell.org/package/QuickCheck-2.1.1.1

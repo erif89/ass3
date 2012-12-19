@@ -75,7 +75,11 @@ rebalance dict = dict -- FIXME
 
 -- return the keys of the dictionary in a list. The order of the keys is not relevant.
 keys :: (Dict k v) -> [k]
-keys dict = [] -- FIXME
+keys (Root d t cmp) = allKeys t []
+    where allKeys Nil acc                   = acc
+          allKeys (Nod k v left right) acc  = allKeys left (allKeys right (k:acc))
+          
+        
 
 -- determines if dict1 and dict2 contain the same set of keys. Take care to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
 -- samekeys :: (Dict k v cmp) (Dict k v cmp) -> Bool -- FIXME

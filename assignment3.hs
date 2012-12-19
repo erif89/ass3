@@ -33,6 +33,9 @@ instance (Show k, Show v) => Show (Tree k v) where
 
 data Dict k v = Root v (Tree k v) (k -> k -> Ordering)
 
+instance (Show k, Show v) => Show (Dict k v) where
+    show (Root d t cmp) = "{Dict default " ++ show d ++
+                          ", Tree " ++ show t ++ "}"
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
 createDictionary :: (k -> k -> Ordering) -> v -> Dict k v

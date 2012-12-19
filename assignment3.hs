@@ -55,7 +55,7 @@ find_node key d (Nod k v left right) cmp
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
 update :: k -> v -> Dict k v -> Dict k v
-update key value (Root d t cmp) = Root d t cmp
+update key value (Root d t cmp) = Root d (update_node key value t cmp) cmp
 
 --update_node :: k -> v -> Nod k v -> c -> Nod k v
 update_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> Tree k v

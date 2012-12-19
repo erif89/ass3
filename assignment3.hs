@@ -69,7 +69,7 @@ update key value (Root d t cmp) = Root d (update_node key value t cmp) cmp where
 -- should take three arguments: key, value and sofar (in this order) which is
 -- the accumulated value so far. initial is the initial value for sofar. Please
 -- note that order of application is (or at least should be) not relevant.
-fold :: (k -> v -> s) -> Dict k v -> s -> s 
+fold :: (k -> v -> s -> s) -> Dict k v -> s -> s 
 fold fun dict initial = initial -- FIXME
 
 -- Return a new dictionary that is more balanced (if needed). This could be run

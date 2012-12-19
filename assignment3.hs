@@ -200,3 +200,9 @@ papercutsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
      ("A rather long word, we want to be able to handle it","."),
      ("A rather long word, we want to be able to handle it.","")]
     (papercuts "A rather long word, we want to be able to handle it.")))]
+
+permutationsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
+    [["Yoda", "Jumps", "High"], ["Yoda", "High", "Jumps"],
+     ["Jumps", "Yoda", "High"], ["Jumps", "High", "Yoda"],
+     ["High", "Yoda", "Jumps"], ["High", "Jumps", "Yoda"]]
+    (permutations ["Yoda", "Jumps", "High"])))]

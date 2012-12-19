@@ -231,8 +231,20 @@ permutationsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
                               TestLabel "test2" (TestCase (assertEqual ""
     ["abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxzy"]
     (take 2 (permutations "abcdefghijklmnopqrstuvwxyz")))),
-                              TestLabel "test2" (TestCase (assertEqual ""
+                              TestLabel "test3" (TestCase (assertEqual ""
     [[0,2,4,6,8,1,3,5,7,9], [0,2,4,6,8,1,3,5,9,7],
      [0,2,4,6,8,1,3,7,5,9], [0,2,4,6,8,1,3,7,9,5],
      [0,2,4,6,8,1,3,9,5,7], [0,2,4,6,8,1,3,9,7,5]]
     (take 6 (permutations [0,2,4,6,8,1,3,5,7,9]))))]
+
+genwordsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
+    ["","a","b","aa","ba","ab","bb","aaa","baa","aba"]
+    (take 10 (genwords "ab")))),
+                          TestLabel "test2" (TestCase (assertEqual ""
+    ["","l","i","s","p","ll","il","sl","pl","li","ii","si","pi","ls","is",
+     "ss","ps","lp","ip","sp"]
+    (take 20 (genwords "lisp")))),
+                          TestLabel "test3" (TestCase (assertEqual ""
+    ["dddd","eddd","addd","dedd","eedd","aedd","dadd","eadd","aadd","dded",
+     "eded","aded","deed","eeed","aeed","daed","eaed","aaed","ddad","edad"]
+    (take 20 (filter (\w -> (length w) == 4) (genwords "dea")))))]

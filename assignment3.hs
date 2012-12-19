@@ -135,15 +135,77 @@ permutations s = [s] -- FIXME
 genwords :: String -> [String]
 genwords s = [""] -- FIXME
 
--- TODO add tests. See http://hunit.sourceforge.net/ and http://hackage.haskell.org/package/QuickCheck-2.1.1.1
+-- Tests. See http://hunit.sourceforge.net/ and possibly
+-- http://hackage.haskell.org/package/QuickCheck-2.1.1.1
+-- for a description of tools to use.
+--
+-- Run from the Haskell interpreter prompt by applying the function runTestTT.
+-- (The "TT" suggests text orientation with output to the terminal.)
+--
+-- Example: runTestTT papercutsTests
 
-papercutsTests = TestList [TestLabel "test1" (TestCase (assertEqual "1"
+papercutsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
     [("","hello"), ("h","ello"), ("he","llo"), ("hel","lo"),
         ("hell","o"), ("hello","")]
     (papercuts "hello"))),
-                           TestLabel "test2" (TestCase (assertEqual "2"
+                           TestLabel "test2" (TestCase (assertEqual ""
     [("","")]
     (papercuts ""))),
-                           TestLabel "test3" (TestCase (assertEqual "2"
+                           TestLabel "test3" (TestCase (assertEqual ""
     [([],[0,1]), ([0],[1]), ([0,1],[])]
-    (papercuts [0, 1])))]
+    (papercuts [0, 1]))),
+                           TestLabel "test4" (TestCase (assertEqual ""
+    [("","A rather long word, we want to be able to handle it."),
+     ("A"," rather long word, we want to be able to handle it."),
+     ("A ","rather long word, we want to be able to handle it."),
+     ("A r","ather long word, we want to be able to handle it."),
+     ("A ra","ther long word, we want to be able to handle it."),
+     ("A rat","her long word, we want to be able to handle it."),
+     ("A rath","er long word, we want to be able to handle it."),
+     ("A rathe","r long word, we want to be able to handle it."),
+     ("A rather"," long word, we want to be able to handle it."),
+     ("A rather ","long word, we want to be able to handle it."),
+     ("A rather l","ong word, we want to be able to handle it."),
+     ("A rather lo","ng word, we want to be able to handle it."),
+     ("A rather lon","g word, we want to be able to handle it."),
+     ("A rather long"," word, we want to be able to handle it."),
+     ("A rather long ","word, we want to be able to handle it."),
+     ("A rather long w","ord, we want to be able to handle it."),
+     ("A rather long wo","rd, we want to be able to handle it."),
+     ("A rather long wor","d, we want to be able to handle it."),
+     ("A rather long word",", we want to be able to handle it."),
+     ("A rather long word,"," we want to be able to handle it."),
+     ("A rather long word, ","we want to be able to handle it."),
+     ("A rather long word, w","e want to be able to handle it."),
+     ("A rather long word, we"," want to be able to handle it."),
+     ("A rather long word, we ","want to be able to handle it."),
+     ("A rather long word, we w","ant to be able to handle it."),
+     ("A rather long word, we wa","nt to be able to handle it."),
+     ("A rather long word, we wan","t to be able to handle it."),
+     ("A rather long word, we want"," to be able to handle it."),
+     ("A rather long word, we want ","to be able to handle it."),
+     ("A rather long word, we want t","o be able to handle it."),
+     ("A rather long word, we want to"," be able to handle it."),
+     ("A rather long word, we want to ","be able to handle it."),
+     ("A rather long word, we want to b","e able to handle it."),
+     ("A rather long word, we want to be"," able to handle it."),
+     ("A rather long word, we want to be ","able to handle it."),
+     ("A rather long word, we want to be a","ble to handle it."),
+     ("A rather long word, we want to be ab","le to handle it."),
+     ("A rather long word, we want to be abl","e to handle it."),
+     ("A rather long word, we want to be able"," to handle it."),
+     ("A rather long word, we want to be able ","to handle it."),
+     ("A rather long word, we want to be able t","o handle it."),
+     ("A rather long word, we want to be able to"," handle it."),
+     ("A rather long word, we want to be able to ","handle it."),
+     ("A rather long word, we want to be able to h","andle it."),
+     ("A rather long word, we want to be able to ha","ndle it."),
+     ("A rather long word, we want to be able to han","dle it."),
+     ("A rather long word, we want to be able to hand","le it."),
+     ("A rather long word, we want to be able to handl","e it."),
+     ("A rather long word, we want to be able to handle"," it."),
+     ("A rather long word, we want to be able to handle ","it."),
+     ("A rather long word, we want to be able to handle i","t."),
+     ("A rather long word, we want to be able to handle it","."),
+     ("A rather long word, we want to be able to handle it.","")]
+    (papercuts "A rather long word, we want to be able to handle it.")))]

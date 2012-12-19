@@ -69,8 +69,10 @@ update key value (Root d t cmp) = Root d (update_node key value t cmp) cmp where
 -- should take three arguments: key, value and sofar (in this order) which is
 -- the accumulated value so far. initial is the initial value for sofar. Please
 -- note that order of application is (or at least should be) not relevant.
-fold :: (k -> v -> s) -> Dict k v -> s -> s 
-fold fun dict initial = initial -- FIXME
+fold :: (k -> v -> s -> s) -> Dict k v -> s -> s 
+fold fun (Root d t cmp) initial = foldHelp fun t initial where
+    foldHelp fun Nil acc = acc
+    foldHelp fun (Nod k v left right) acc = foldHelp fun left (foldHelp fun right (fun k v acc))
 
 -- Return a new dictionary that is more balanced (if needed). This could be run
 -- when needed as part of update as well.
@@ -151,6 +153,13 @@ genwords s = genwordsHelper s 0 [] where
 -- (The "TT" suggests text orientation with output to the terminal.)
 --
 -- Example: runTestTT papercutsTests
+
+
+
+--update 2 "two" (update 1 "one" (update 4 "four" (createDictionary compare "zero")))
+-- show:
+--{Dict default "zero", Tree k 3, v "three", l (k 1, v "one", l (Nil), r (k 2, v "
+--two", l (Nil), r (Nil))), r (k 4, v "four", l (Nil), r (Nil))}
 
 papercutsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
     [("","hello"), ("h","ello"), ("he","llo"), ("hel","lo"),

@@ -25,26 +25,14 @@ data Nil = Nothing
 -- represented as an ordered tree.
 data Tree k v = Nil | Nod k v (Tree k v) (Tree k v)
 
-
-
---instance Show Color where
---    show Red   = "Red"
---    show Green = "Green"
---    show Blue  = "Blue"
-    
 instance (Show k, Show v) => Show (Tree k v) where
     show Nil = "Nil"
     show (Nod k v l r) = "k " ++ show k ++ ", v " ++ show v ++
                           ", l (" ++ show l ++
                           "), r (" ++ show r ++ ")"
 
---instance Show (Nod k v) where
---  show (Nod k v l r) = showNod (Nod k v l r)
---  show Nil = showNod Nil
-
 data Dict k v = Root v (Tree k v) (k -> k -> Ordering)
 
-    
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
 createDictionary :: (k -> k -> Ordering) -> v -> Dict k v

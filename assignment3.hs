@@ -43,7 +43,6 @@ createDictionary cmp d = Root d Nil cmp
 
 -- find value for key.
 find :: k -> Dict k v -> v
-find key (Root d Nil _) = d
 find key (Root d t cmp) = find_node key d t cmp
 
 find_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> v

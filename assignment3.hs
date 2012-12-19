@@ -28,8 +28,8 @@ data Tree k v = Nil | Nod k v (Tree k v) (Tree k v)
 instance (Show k, Show v) => Show (Tree k v) where
     show Nil = "Nil"
     show (Nod k v l r) = "k " ++ show k ++ ", v " ++ show v ++
-                          ", l (" ++ show l ++
-                          "), r (" ++ show r ++ ")"
+                         ", l (" ++ show l ++
+                         "), r (" ++ show r ++ ")"
 
 data Dict k v = Root v (Tree k v) (k -> k -> Ordering)
 
@@ -37,11 +37,14 @@ instance (Show k, Show v) => Show (Dict k v) where
     show (Root d t cmp) = "{Dict default " ++ show d ++
                           ", Tree " ++ show t ++ "}"
 
--- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
+-- Create a new empty dictionary with compare being the comparison function to
+-- be used for keys. The comparison function should take two keys and return
+-- one of the constants LT, EQ, GT to express the relationship between the
+-- keys. d is the default value that should be returned if a key is not found.
 createDictionary :: (k -> k -> Ordering) -> v -> Dict k v
 createDictionary cmp d = Root d Nil cmp
 
--- find value for key.
+-- Find value for key.
 find :: k -> Dict k v -> v
 find key (Root d t cmp) = find_node key d t cmp where
     find_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> v
@@ -51,7 +54,8 @@ find key (Root d t cmp) = find_node key d t cmp where
         | cmp key k == LT = find_node key d left cmp
         | cmp key k == GT = find_node key d right cmp
 
--- return a new dictionary where key now maps to value, regardless of if it was present before.
+-- Return a new dictionary where key now maps to value, regardless of if it
+-- was present before.
 update :: k -> v -> Dict k v -> Dict k v
 update key value (Root d t cmp) = Root d (update_node key value t cmp) cmp where
     update_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> Tree k v
@@ -61,16 +65,20 @@ update key value (Root d t cmp) = Root d (update_node key value t cmp) cmp where
         | cmp key k == LT = Nod k v (update_node key value left cmp) right
         | cmp key k == GT = Nod k v left (update_node key value right cmp)
 
--- fold the key-value pairs of the dictionary using the function fun. fun should take three arguments: key, value and sofar (in this order) which is the accumulated value so far. initial is the initial value for sofar. Please note that order of application is (or at least should be) not relevant.
+-- Fold the key-value pairs of the dictionary using the function fun. fun
+-- should take three arguments: key, value and sofar (in this order) which is
+-- the accumulated value so far. initial is the initial value for sofar. Please
+-- note that order of application is (or at least should be) not relevant.
 fold :: (k -> v -> s) -> Dict k v -> s -> s 
 fold fun dict initial = initial -- FIXME
 
--- return a new dictionary that is more balanced (if needed). This could be run when needed as part of update as well.
--- rebalace :: (Dict k v cmp) -> (Dict k v cmp) FIXME
-rebalance :: Dict k v -> Dict k v  -- FIXME
+-- Return a new dictionary that is more balanced (if needed). This could be run
+-- when needed as part of update as well.
+rebalance :: Dict k v -> Dict k v
 rebalance dict = dict -- FIXME
 
--- return the keys of the dictionary in a list. The order of the keys is not relevant.
+-- Return the keys of the dictionary in a list. The order of the keys is not
+-- relevant.
 keys :: (Dict k v) -> [k]
 keys (Root d t cmp) = allKeys t [] where
     allKeys Nil acc = acc
@@ -78,18 +86,19 @@ keys (Root d t cmp) = allKeys t [] where
           
         
 
--- determines if dict1 and dict2 contain the same set of keys. Take care to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
--- samekeys :: (Dict k v cmp) (Dict k v cmp) -> Bool -- FIXME
-samekeys :: Dict k v -> Dict k v -> Bool -- FIXME
+-- Determines if dict1 and dict2 contain the same set of keys. Care has been taken to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
+samekeys :: Dict k v -> Dict k v -> Bool
 samekeys dict1 dict2 = False -- FIXME
 
 
--- Takes a list and returns a list of all ways to split the list into two parts. Note that a part can be empty.
+-- Takes a list and returns a list of all ways to split the list into two
+-- parts. Note that a part can be empty.
+--
 -- Example:
 --   papercuts "hello" =
 --     [("","hello"),("h","ello"),("he","llo"),
 --      ("hel","lo"),("hell","o"),("hello","")]
-papercuts :: [a] -> [([a], [a])] -- TODO clarify if a can be anything other than Char
+papercuts :: [a] -> [([a], [a])]
 papercuts s = cuts s (length s) [] where
     cuts s count acc 
         | count < 0 = acc 
@@ -117,7 +126,9 @@ permutations xs = [ y:zs | (y,ys) <- select xs, zs <- permutations ys] where
     select (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- select xs ]
 
 
--- Generates a list of all strings that can be constructed using the elements of an alphabet.
+-- Generates a list of all strings that can be constructed using the elements
+-- of an alphabet.
+--
 -- Examples:
 --   take 10 (genwords "ab") =
 --     ["","a","b","aa","ba","ab","bb","aaa","baa","aba"]

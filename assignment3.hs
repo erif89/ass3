@@ -137,4 +137,6 @@ genwords s = [""] -- FIXME
 
 -- TODO add tests. See http://hunit.sourceforge.net/ and http://hackage.haskell.org/package/QuickCheck-2.1.1.1
 
-test1 = TestCase (assertEqual "1" 1 1)
+test1 = TestCase (assertEqual "1" [("","hello"),("h","ello"),("he","llo"),("hel","lo"),("hell","o"),("hello","")] (papercuts "hello"))
+test2 = TestCase (assertEqual "2" [("","")] (papercuts ""))
+tests = TestList [TestLabel "test1" test1, TestLabel "test2" test2]

@@ -49,21 +49,21 @@ find key (Root d t cmp) = find_node key d t cmp
 find_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> v
 find_node _ d Nil _ = d
 find_node key d (Nod k v left right) cmp
-    | (cmp key k == EQ) = v
-    | (cmp key k == LT) = find_node key d left cmp
-    | (cmp key k == GT) = find_node key d right cmp
+    | cmp key k == EQ = v
+    | cmp key k == LT = find_node key d left cmp
+    | cmp key k == GT = find_node key d right cmp
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
 update :: k -> v -> Dict k v -> Dict k v
 update key value (Root d t cmp) = (Root d t cmp)
-    
+
 --update_node :: k -> v -> Nod k v -> c -> Nod k v
 update_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> Tree k v
 update_node key value Nil _ = (Nod key value Nil Nil)
 update_node key value (Nod k v left right) cmp
-    | (cmp key k == EQ) = (Nod k value left right)
-    | (cmp key k == LT) = (Nod k v (update_node key value left cmp) right)
-    | (cmp key k == GT) = (Nod k v left (update_node key value right cmp))
+    | cmp key k == EQ = (Nod k value left right)
+    | cmp key k == LT = (Nod k v (update_node key value left cmp) right)
+    | cmp key k == GT = (Nod k v left (update_node key value right cmp))
 
 -- fold the key-value pairs of the dictionary using the function fun. fun should take three arguments: key, value and sofar (in this order) which is the accumulated value so far. initial is the initial value for sofar. Please note that order of application is (or at least should be) not relevant.
 fold :: (k -> v -> s) -> Dict k v -> s -> s 

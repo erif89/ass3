@@ -44,7 +44,14 @@ createDictionary compare d = Root d Nil compare
 -- find value for key.
 find :: k -> Dict k v -> v
 find key (Root d Nil _) = d
-find key (Root d (Nod k v left right) cmp) = v -- FIXME
+find key (Root d t cmp) = find_node key d t cmp
+
+find_node :: k -> v -> Tree k v -> (k -> k -> Ordering) -> v
+find_node _ d Nil _ = d
+find_node key d (Nod k v left right) cmp
+    | cmp key k == EQ = v
+    | cmp key k == LT = find_node key d left cmp
+    | cmp key k == GT = find_node key d right cmp
 
 -- return a new dictionary where key now maps to value, regardless of if it was present before.
 update :: k -> v -> Dict k v -> Dict k v

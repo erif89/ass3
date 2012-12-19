@@ -136,8 +136,11 @@ permutations xs = [ y:zs | (y,ys) <- select xs, zs <- permutations ys]
 --   take 20 (filter (\w -> (length w) == 4) (genwords "dea")) =
 --     ["dddd","eddd","addd","dedd","eedd","aedd","dadd","eadd","aadd","dded",
 --      "eded","aded","deed","eeed","aeed","daed","eaed","aaed","ddad","edad"]
-genwords :: String -> [String]
-genwords s = [] -- FIXME
+genwords :: [a] -> [[a]]
+genwords s = genwordsHelper s 0 []
+
+genwordsHelper :: [a] -> Int -> [[a]] -> [[a]]
+genwordsHelper s n acc = acc
 
 -- Tests. See http://hunit.sourceforge.net/ and possibly
 -- http://hackage.haskell.org/package/QuickCheck-2.1.1.1

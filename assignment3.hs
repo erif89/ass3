@@ -90,14 +90,10 @@ samekeys dict1 dict2 = False -- FIXME
 --     [("","hello"),("h","ello"),("he","llo"),
 --      ("hel","lo"),("hell","o"),("hello","")]
 papercuts :: [a] -> [([a], [a])] -- TODO clarify if a can be anything other than Char
-papercuts s = papercutshelper s (length s) [] -- FIXME
-
--- trivial solution
-papercutshelper :: [a] -> Int -> [([a], [a])] -> [([a], [a])] 
-papercutshelper s count acc
-    | count < 0 = acc
-    | count >= 0 = (papercutshelper s (count-1) ((take count s, drop count s):acc))
-
+papercuts s = cuts s (length s) [] 
+    where cuts s count acc 
+            | count < 0 = acc 
+            | count >= 0 = (cuts s (count-1) ((take count s, drop count s):acc))
 
 
 -- Generates all permutations of a list. The list is generated lazily, i.e., all elements are not eagerly constructed.

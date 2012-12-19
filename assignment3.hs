@@ -48,7 +48,7 @@ data Dict k v = Root v (Tree k v) (k -> k -> Ordering)
 
 -- create a new empty dictionary with compare being the comparison function to be used for keys. The comparison function should take two keys and return one of the constants LT, EQ, GT to express the relationship between the keys. d is the default value that should be returned if a key is not found.
 createDictionary :: (k -> k -> Ordering) -> v -> Dict k v
-createDictionary compare d = Root d Nil compare
+createDictionary cmp d = Root d Nil cmp
 
 -- find value for key.
 find :: k -> Dict k v -> v

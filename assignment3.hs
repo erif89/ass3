@@ -76,13 +76,23 @@ fold fun (Root d t cmp) initial = foldHelp fun t initial where
 
 -- Return a new dictionary that is more balanced (if needed). This could be run
 -- when needed as part of update as well.
-rebalance :: Dict k v -> Int
-rebalance (Root d t cmp) = balance t (getBalance t) where
-    balance Nil _ = Nil
-    balance n@(Nod k v left right) b
-        | b < -1 = rotateLeft n
-        | b > 1  = rotateRight n
-        | otherwise = n
+rebalance :: Dict k v -> Dict k v
+rebalance (Root d t cmp) = (Root d (balance t) cmp) where
+    balance :: Tree k v -> Tree k v
+    balance Nil = Nil
+    balance (Nod k v left right) =
+        let
+            balancedLeft = (balance left)
+            balancedRight = (balance right)
+            n = (Nod k v balancedLeft balancedRight)
+            b = getBalance n
+        in
+            if b < -1 then -- right subtree too large
+                balance (rotateLeft n)
+            else if b > 1 then -- left subtree too large
+                balance (rotateRight n)
+            else -- base case (tree is balanced)
+                n
     getBalance Nil = 0
     getBalance (Nod k v left right) = (getHeight left) - (getHeight right)
     getHeight Nil = 0

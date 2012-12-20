@@ -17,10 +17,6 @@ permutations,
 genwords
 ) where
 
-import HUnit
-import Data.List (sort)
-
-
 -- An abstract data type for dictionaries, i.e., key-value stores,
 -- represented as an ordered tree.
 data Tree k v = Nil | Nod k v (Tree k v) (Tree k v)
@@ -181,9 +177,9 @@ permutations s = [hd:res | hd:tl <- extract s, res <- permutations tl] where
 -- Generates a list of all strings that can be constructed using the elements
 -- of an alphabet.
 --
--- Examples:
---   take 10 (genwords "ab") =
---     ["","a","b","aa","ba","ab","bb","aaa","baa","aba"]
+-- Example: take 15 (genwords "ab") = ["","a","b","aa","ab","ba","bb",
+--                                     "aaa","aab","aba","abb","baa",
+--                                     "bab","bba","bbb"]
 genwords :: [a] -> [[a]]
 genwords alphabet = bar alphabet 0 where
     bar :: [a] -> Int -> [[a]]
@@ -191,125 +187,3 @@ genwords alphabet = bar alphabet 0 where
     foo :: [a] -> Int -> [[a]]
     foo alphabet 0 = [[]]
     foo alphabet n = [c:res | c <- alphabet, res <- foo alphabet (n-1)]
-
--- Tests. See http://hunit.sourceforge.net/ and possibly
--- http://hackage.haskell.org/package/QuickCheck-2.1.1.1
--- for a description of tools to use.
---
--- Run from the Haskell interpreter prompt by applying the function runTestTT.
--- (The "TT" suggests text orientation with output to the terminal.)
---
--- Example: runTestTT papercutsTests
-
-updateTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
-    ("{Dict default \"zero\", Tree k 4, v \"four\", l (k 1, v \"one\", l " ++
-        "(Nil), r (k 2, v \"two\", l (Nil), r (Nil))), r (Nil)}")
-    (show (update 2 "two" (update 1 "one" (update 4 "four"
-        (createDictionary compare "zero")))))))]
-
---fold f (update 2 "two" (update 1 "one" (update 4 "four" (createDictionary compare "zero")))) 0
-
-
---keys (update 2 "two" (update 1 "one" (update 4 "four" (update 3 "three" (createDictionary compare "zero")))))
-
---[2,1,4,3]
-
-papercutsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
-    [("","hello"), ("h","ello"), ("he","llo"), ("hel","lo"),
-        ("hell","o"), ("hello","")]
-    (papercuts "hello"))),
-                           TestLabel "test2" (TestCase (assertEqual ""
-    [("","")]
-    (papercuts ""))),
-                           TestLabel "test3" (TestCase (assertEqual ""
-    [([],[0,1]), ([0],[1]), ([0,1],[])]
-    (papercuts [0, 1]))),
-                           TestLabel "test4" (TestCase (assertEqual ""
-    [("","A rather long word, we want to be able to handle it."),
-     ("A"," rather long word, we want to be able to handle it."),
-     ("A ","rather long word, we want to be able to handle it."),
-     ("A r","ather long word, we want to be able to handle it."),
-     ("A ra","ther long word, we want to be able to handle it."),
-     ("A rat","her long word, we want to be able to handle it."),
-     ("A rath","er long word, we want to be able to handle it."),
-     ("A rathe","r long word, we want to be able to handle it."),
-     ("A rather"," long word, we want to be able to handle it."),
-     ("A rather ","long word, we want to be able to handle it."),
-     ("A rather l","ong word, we want to be able to handle it."),
-     ("A rather lo","ng word, we want to be able to handle it."),
-     ("A rather lon","g word, we want to be able to handle it."),
-     ("A rather long"," word, we want to be able to handle it."),
-     ("A rather long ","word, we want to be able to handle it."),
-     ("A rather long w","ord, we want to be able to handle it."),
-     ("A rather long wo","rd, we want to be able to handle it."),
-     ("A rather long wor","d, we want to be able to handle it."),
-     ("A rather long word",", we want to be able to handle it."),
-     ("A rather long word,"," we want to be able to handle it."),
-     ("A rather long word, ","we want to be able to handle it."),
-     ("A rather long word, w","e want to be able to handle it."),
-     ("A rather long word, we"," want to be able to handle it."),
-     ("A rather long word, we ","want to be able to handle it."),
-     ("A rather long word, we w","ant to be able to handle it."),
-     ("A rather long word, we wa","nt to be able to handle it."),
-     ("A rather long word, we wan","t to be able to handle it."),
-     ("A rather long word, we want"," to be able to handle it."),
-     ("A rather long word, we want ","to be able to handle it."),
-     ("A rather long word, we want t","o be able to handle it."),
-     ("A rather long word, we want to"," be able to handle it."),
-     ("A rather long word, we want to ","be able to handle it."),
-     ("A rather long word, we want to b","e able to handle it."),
-     ("A rather long word, we want to be"," able to handle it."),
-     ("A rather long word, we want to be ","able to handle it."),
-     ("A rather long word, we want to be a","ble to handle it."),
-     ("A rather long word, we want to be ab","le to handle it."),
-     ("A rather long word, we want to be abl","e to handle it."),
-     ("A rather long word, we want to be able"," to handle it."),
-     ("A rather long word, we want to be able ","to handle it."),
-     ("A rather long word, we want to be able t","o handle it."),
-     ("A rather long word, we want to be able to"," handle it."),
-     ("A rather long word, we want to be able to ","handle it."),
-     ("A rather long word, we want to be able to h","andle it."),
-     ("A rather long word, we want to be able to ha","ndle it."),
-     ("A rather long word, we want to be able to han","dle it."),
-     ("A rather long word, we want to be able to hand","le it."),
-     ("A rather long word, we want to be able to handl","e it."),
-     ("A rather long word, we want to be able to handle"," it."),
-     ("A rather long word, we want to be able to handle ","it."),
-     ("A rather long word, we want to be able to handle i","t."),
-     ("A rather long word, we want to be able to handle it","."),
-     ("A rather long word, we want to be able to handle it.","")]
-    (papercuts "A rather long word, we want to be able to handle it.")))]
-
-permutationsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
-    [["Yoda", "Jumps", "High"], ["Yoda", "High", "Jumps"],
-     ["Jumps", "Yoda", "High"], ["Jumps", "High", "Yoda"],
-     ["High", "Yoda", "Jumps"], ["High", "Jumps", "Yoda"]]
-    (permutations ["Yoda", "Jumps", "High"]))),
-                              TestLabel "test2" (TestCase (assertEqual ""
-    ["abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxzy"]
-    (take 2 (permutations "abcdefghijklmnopqrstuvwxyz")))),
-                              TestLabel "test3" (TestCase (assertEqual ""
-    [[0,2,4,6,8,1,3,5,7,9], [0,2,4,6,8,1,3,5,9,7],
-     [0,2,4,6,8,1,3,7,5,9], [0,2,4,6,8,1,3,7,9,5],
-     [0,2,4,6,8,1,3,9,5,7], [0,2,4,6,8,1,3,9,7,5]]
-    (take 6 (permutations [0,2,4,6,8,1,3,5,7,9]))))]
-
-genwordsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
-    (sort ["","a","b","aa","ba","ab","bb","aaa","baa","aba","aab","abb","bab",
-           "bba","bbb"])
-    (sort (take 15 (genwords "ab"))))),
-                          TestLabel "test2" (TestCase (assertEqual ""
-    (sort ["","l","i","s","p","ll","il","sl","pl","li","ii","si",
-     "pi","ls","is","ss","ps","lp","ip","sp"])
-    (sort (take 20 (genwords "lisp"))))),
-                          TestLabel "test3" (TestCase (assertEqual ""
-    (sort (map reverse ["dddd","eddd","addd","dedd","eedd","aedd","dadd",
-                        "eadd","aadd","dded","eded","aded","deed","eeed",
-                        "aeed","daed","eaed","aaed","ddad","edad"]))
-    (sort (take 20 (filter (\w -> (length w) == 4) (genwords "dea")))))),
-                          TestLabel "test4" (TestCase (assertEqual ""
-    (sort ["","a","b","c","aa","ba","ca","ab","ac","bb","bc","cc","cb","aaa",
-           "baa","aba","aab","caa","aca","aac","abb","bab","bba","acc","cac",
-           "cca","bcc","cbc","ccb","cbb","bcb","bbc","abc","acb","bac","bca",
-           "cab","cba","bbb","ccc"])
-    (sort (take 40 (genwords "abc")))))]

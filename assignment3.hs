@@ -18,7 +18,7 @@ genwords
 ) where
 
 import HUnit
-
+import Data.List (sort)
 
 
 -- An abstract data type for dictionaries, i.e., key-value stores,
@@ -149,28 +149,13 @@ permutations s = [hd:res | hd:tl <- extract s, res <- permutations tl] where
 -- Examples:
 --   take 10 (genwords "ab") =
 --     ["","a","b","aa","ba","ab","bb","aaa","baa","aba"]
---   take 20 (genwords "lisp") =
---     ["","l","i","s","p","ll","il","sl","pl","li","ii","si","pi","ls","is",
---      "ss","ps","lp","ip","sp"]
---   take 20 (filter (\w -> (length w) == 4) (genwords "dea")) =
---     ["dddd","eddd","addd","dedd","eedd","aedd","dadd","eadd","aadd","dded",
---      "eded","aded","deed","eeed","aeed","daed","eaed","aaed","ddad","edad"]
 genwords :: [a] -> [[a]]
-genwords alphabet = [[]] --first alphabet 1 where
-    -- countLength = [s | [1..]]
--- -- an = alphabet n (the nth character in the alphabet)
--- -- cn = current n (the nth character in the current word)
-    -- genwordsHelper :: [a] -> Int -> [[a]] -> [[a]]
-    -- genwordsHelper alphabet current cn an acc = [ s | cn2 <- [1..(length current)], an2 <- alphabet, ]
-    -- -- n: length of word
-    -- first :: [a] -> Int -> [a]
-    -- first alphabet n = take n (repeat (head alphabet))
-
-bar alphabet n = (foo alphabet n) ++ (bar alphabet (n+1))
-
-foo :: [a] -> Int -> [[a]]
-foo alphabet 0 = [[]]
-foo alphabet n = [c:res | c <- alphabet, res <- foo alphabet (n-1)]
+genwords alphabet = bar alphabet 0 where
+    bar :: [a] -> Int -> [[a]]
+    bar alphabet n = (foo alphabet n) ++ (bar alphabet (n+1))
+    foo :: [a] -> Int -> [[a]]
+    foo alphabet 0 = [[]]
+    foo alphabet n = [c:res | c <- alphabet, res <- foo alphabet (n-1)]
 
 -- Tests. See http://hunit.sourceforge.net/ and possibly
 -- http://hackage.haskell.org/package/QuickCheck-2.1.1.1
@@ -274,15 +259,22 @@ permutationsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
      [0,2,4,6,8,1,3,9,5,7], [0,2,4,6,8,1,3,9,7,5]]
     (take 6 (permutations [0,2,4,6,8,1,3,5,7,9]))))]
 
-{--genwordsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
-    ["","a","b","aa","ba","ab","bb","aaa","baa","aba"]
-    (take 10 (genwords "ab")))),
+genwordsTests = TestList [TestLabel "test1" (TestCase (assertEqual ""
+    (sort ["","a","b","aa","ba","ab","bb","aaa","baa","aba","aab","abb","bab",
+           "bba","bbb"])
+    (sort (take 15 (genwords "ab"))))),
                           TestLabel "test2" (TestCase (assertEqual ""
-    ["","l","i","s","p","ll","il","sl","pl","li","ii","si","pi","ls","is",
-     "ss","ps","lp","ip","sp"]
-    (take 20 (genwords "lisp")))),
+    (sort ["","l","i","s","p","ll","il","sl","pl","li","ii","si",
+     "pi","ls","is","ss","ps","lp","ip","sp"])
+    (sort (take 20 (genwords "lisp"))))),
                           TestLabel "test3" (TestCase (assertEqual ""
-    ["dddd","eddd","addd","dedd","eedd","aedd","dadd","eadd","aadd","dded",
-     "eded","aded","deed","eeed","aeed","daed","eaed","aaed","ddad","edad"]
-    (take 20 (filter (\w -> (length w) == 4) (genwords "dea")))))]
---}
+    (sort (map reverse ["dddd","eddd","addd","dedd","eedd","aedd","dadd",
+                        "eadd","aadd","dded","eded","aded","deed","eeed",
+                        "aeed","daed","eaed","aaed","ddad","edad"]))
+    (sort (take 20 (filter (\w -> (length w) == 4) (genwords "dea")))))),
+                          TestLabel "test4" (TestCase (assertEqual ""
+    (sort ["","a","b","c","aa","ba","ca","ab","ac","bb","bc","cc","cb","aaa",
+           "baa","aba","aab","caa","aca","aac","abb","bab","bba","acc","cac",
+           "cca","bcc","cbc","ccb","cbb","bcb","bbc","abc","acb","bac","bca",
+           "cab","cba","bbb","ccc"])
+    (sort (take 40 (genwords "abc")))))]

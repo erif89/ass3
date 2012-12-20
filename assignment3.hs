@@ -76,9 +76,17 @@ fold fun (Root d t cmp) initial = foldHelp fun t initial where
 
 -- Return a new dictionary that is more balanced (if needed). This could be run
 -- when needed as part of update as well.
-rebalance :: Dict k v -> Dict k v
-rebalance dict = getBalance dict where
-    getBalance
+rebalance :: Dict k v -> Int
+rebalance (Root d t cmp) = balance t (getBalance t) where
+    balance Nil _ = Nil
+    balance n@(Nod k v left right) b
+        | b < -1 = rotateLeft n
+        | b > 1  = rotateRight n
+        | otherwise = n
+    getBalance Nil = 0
+    getBalance (Nod k v left right) = (getHeight left) - (getHeight right)
+    getHeight Nil = 0
+    getHeight (Nod k v left right) = (max (getHeight left) (getHeight right)) + 1
 
 -- Return the keys of the dictionary in a list. The order of the keys is not
 -- relevant.

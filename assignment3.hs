@@ -137,15 +137,10 @@ papercuts s = cuts s (length s) [] where
 -- significantly faster than the second if the result is large enough, since
 -- the list will be evaluated during the second timing only.
 permutations :: [a] -> [[a]]
-permutations s
-    | null s = [[]]
-    | otherwise = [first:remaining | (first, remaining) <- divide(s)] where
-        divide s = [(first, remaining) | (first, rest) <- partition s,
-            remaining <- permutations rest]
-        partition [] = []
-        partition (hd:tl) = (hd,tl) : [(first, hd:rest) |
-            (first, rest) <- partition tl]
-
+permutations [] = [[]]
+permutations s = [hd:res | hd:tl <- extract s, res <- permutations tl] where
+    extract [] = []
+    extract l@(hd:tl) = l : [first:hd:rest | first:rest <- extract tl]
 
 -- Generates a list of all strings that can be constructed using the elements
 -- of an alphabet.

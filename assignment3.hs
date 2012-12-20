@@ -79,14 +79,23 @@ fold fun (Root d t cmp) initial = foldHelp fun t initial where
 rebalance :: Dict k v -> Dict k v
 rebalance dict = dict -- FIXME
 
+-- rotate
+rotateLeft :: Tree k v -> Tree k v
+rotateLeft Nil = Nil
+rotateLeft (Nod k v left Nil) = error "right subtree is empty"
+rotateLeft (Nod k v left (Nod k2 v2 left2 right2)) = (Nod k2 v2 (Nod k v left left2) right2)
+
+rotateRight :: Tree k v -> Tree k v
+rotateRight Nil = Nil
+rotateRight (Nod k v Nil right) = error "left subtree is empty"
+rotateRight (Nod k v (Nod k2 v2 left2 right2) right) = (Nod k2 v2 left2 (Nod k v right2 right))
+
 -- Return the keys of the dictionary in a list. The order of the keys is not
 -- relevant.
 keys :: (Dict k v) -> [k]
 keys (Root d t cmp) = allKeys t [] where
     allKeys Nil acc = acc
     allKeys (Nod k v left right) acc = allKeys left (allKeys right (k:acc))
-          
-        
 
 -- Determines if dict1 and dict2 contain the same set of keys. Care has been taken to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
 samekeys :: Dict k v -> Dict k v -> Bool

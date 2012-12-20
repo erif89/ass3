@@ -123,7 +123,11 @@ keys (Root d t cmp) = allKeys t [] where
     allKeys Nil acc = acc
     allKeys (Nod k v left right) acc = allKeys left (allKeys right (k:acc))
 
--- Determines if dict1 and dict2 contain the same set of keys. Care has been taken to make it efficient, i.e., do not construct unnecessary large intermediate data structures. samekeys should use the compare function, which should be the same for the two dictionaries and can be assumed to behave 'in the right way' for its two arguments (i.e. EQ return value implies that the arguments can be swapped and the result is still EQ, GT implies that if the arguments are swapped the return value will be LT and vice-versa).
+-- Determines if dict1 and dict2 contain the same set of keys. Care has been
+-- taken to make it efficient, no unnecessary large intermediate data
+-- structures are contructed. samekeys uses the compare function of the first
+-- dictionary, which must be type compatible with both dictionaries and return
+-- an ordering for samekeys to work.
 samekeys :: Dict k v -> Dict k v -> Bool
 samekeys (Root d1 t1 cmp1) (Root d2 t2 cmp2) = samekeysHelp (buildstack t1 []) (buildstack t2 []) cmp1 where
     samekeysHelp stack1 stack2 cmp
@@ -135,9 +139,6 @@ samekeys (Root d1 t1 cmp1) (Root d2 t2 cmp2) = samekeysHelp (buildstack t1 []) (
     buildstack node@(Nod k v left _) acc = (buildstack left (node:acc))
     popnode [] = []
     popnode ((Nod _ _ _ right):stack) = buildstack right stack
-    
-    
-
 
 
 -- Takes a list and returns a list of all ways to split the list into two

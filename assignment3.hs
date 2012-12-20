@@ -116,7 +116,7 @@ papercuts :: [a] -> [([a], [a])]
 papercuts s = cuts s (length s) [] where
     cuts s count acc 
         | count < 0 = acc 
-        | count >= 0 = (cuts s (count-1) ((take count s, drop count s):acc))
+        | otherwise = (cuts s (count-1) ((take count s, drop count s):acc))
 
 
 -- Generates all permutations of a list. The list is generated lazily, i.e.,

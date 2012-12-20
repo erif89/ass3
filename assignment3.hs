@@ -77,7 +77,8 @@ fold fun (Root d t cmp) initial = foldHelp fun t initial where
 -- Return a new dictionary that is more balanced (if needed). This could be run
 -- when needed as part of update as well.
 rebalance :: Dict k v -> Dict k v
-rebalance dict = dict -- FIXME
+rebalance dict = getBalance dict where
+    getBalance
 
 -- Return the keys of the dictionary in a list. The order of the keys is not
 -- relevant.

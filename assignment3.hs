@@ -93,21 +93,28 @@ rebalance (Root d t cmp) = (Root d (balance t) cmp) where
                 balance (rotateRight n)
             else -- base case (tree is balanced)
                 n
+
     getBalance Nil = 0
     getBalance (Nod k v left right) = (getHeight left) - (getHeight right)
+
     getHeight Nil = 0
     getHeight (Nod k v left right) = (max (getHeight left) (getHeight right)) + 1
 
--- rotate
-rotateLeft :: Tree k v -> Tree k v
-rotateLeft Nil = Nil
-rotateLeft (Nod k v left Nil) = error "right subtree is empty"
-rotateLeft (Nod k v left (Nod k2 v2 left2 right2)) = (Nod k2 v2 (Nod k v left left2) right2)
+    rotateLeft :: Tree k v -> Tree k v
+    rotateLeft Nil =
+        Nil
+    rotateLeft (Nod k v left Nil) =
+        error "right subtree is empty"
+    rotateLeft (Nod k v left (Nod k2 v2 left2 right2)) =
+        (Nod k2 v2 (Nod k v left left2) right2)
 
-rotateRight :: Tree k v -> Tree k v
-rotateRight Nil = Nil
-rotateRight (Nod k v Nil right) = error "left subtree is empty"
-rotateRight (Nod k v (Nod k2 v2 left2 right2) right) = (Nod k2 v2 left2 (Nod k v right2 right))
+    rotateRight :: Tree k v -> Tree k v
+    rotateRight Nil =
+        Nil
+    rotateRight (Nod k v Nil right) =
+        error "left subtree is empty"
+    rotateRight (Nod k v (Nod k2 v2 left2 right2) right) =
+        (Nod k2 v2 left2 (Nod k v right2 right))
 
 -- Return the keys of the dictionary in a list. The order of the keys is not
 -- relevant.

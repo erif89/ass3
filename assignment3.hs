@@ -136,13 +136,15 @@ papercuts s = cuts s (length s) [] where
 -- Then time the same operation again. The first and last timings should be
 -- significantly faster than the second if the result is large enough, since
 -- the list will be evaluated during the second timing only.
---
--- TODO don't use version from http://rosettacode.org/wiki/Permutations#Haskell
 permutations :: [a] -> [[a]]
-permutations [] = [[]]
-permutations xs = [ y:zs | (y,ys) <- select xs, zs <- permutations ys] where
-    select [] = []
-    select (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- select xs ]
+permutations s
+    | null s = [[]]
+    | otherwise = [first:remaining | (first, remaining) <- divide(s)] where
+        divide s = [(first, remaining) | (first, rest) <- partition s,
+            remaining <- permutations rest]
+        partition [] = []
+        partition (hd:tl) = (hd,tl) : [(first, hd:rest) |
+            (first, rest) <- partition tl]
 
 
 -- Generates a list of all strings that can be constructed using the elements
